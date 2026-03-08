@@ -2,5 +2,5 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
   </Folder>
-  <Project Path="TripPlanner.csproj" />
+  <Project Path="TripPlanner.csproj" Id="5fa42226-d69a-43a6-91c2-586c3fc089a9" />
 </Solution>

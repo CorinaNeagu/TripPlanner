@@ -1,16 +1,12 @@
-# Pachete și fișiere de compilare
 [Bb]in/
 [Oo]bj/
 
-# Fișiere specifice Visual Studio
 .vs/
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 
-# Baze de date (Opțional)
-# Dacă vrei ca profesorul să vadă baza ta de date pe GitHub, 
-# pune un simbol '#' în fața liniilor de mai jos:
+
 App_Data/*.ldf
-# App_Data/*.mdf
+App_Data/*.mdf
