@@ -23,5 +23,12 @@ namespace TripPlanner
         {
             GridView1.DataBind();
         }
+
+        protected void btnShowAll_Click(object sender, EventArgs e)
+        {
+            DropDownList1.SelectedIndex = 0;
+            SqlDataSourceCalatorii.SelectParameters["destination"].DefaultValue = "%";
+            GridView1.DataBind();
+        }
     }
 }

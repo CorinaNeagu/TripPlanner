@@ -6,100 +6,134 @@
 <head runat="server">
     <title></title>
 </head>
-<body>
+<body class="bg-light">
     <form id="form1" runat="server">
         <div class="container mt-4">
-            
-            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="trip_id" DataSourceID="SqlDataSourceCalatorii" CssClass="table table-hover">
-                <Columns>
-                    <asp:BoundField DataField="destination" HeaderText="Destinație" SortExpression="destination" />
-                    <asp:BoundField DataField="budget" HeaderText="Buget" SortExpression="budget" DataFormatString="{0:N2}" />
-                    <asp:BoundField DataField="start_date" HeaderText="Data Start" SortExpression="start_date" DataFormatString="{0:yyyy-MM-dd}" />
-                    <asp:BoundField DataField="end_date" HeaderText="Data Final" SortExpression="end_date" DataFormatString="{0:yyyy-MM-dd}" />
-                    <asp:BoundField DataField="trip_id" HeaderText="ID" InsertVisible="False" ReadOnly="True" SortExpression="trip_id" Visible="False" />
-                    
-                    <asp:CommandField ButtonType="Button" CancelText="Renunță" DeleteText="Șterge" EditText="Editează" ShowDeleteButton="True" ShowEditButton="True" UpdateText="Salvează">
-                        <ControlStyle CssClass="btn btn-sm btn-outline-primary" />
-                    </asp:CommandField>
-                </Columns>
-            </asp:GridView>
+            <h2 class="text-primary">✈️ Management Călătorii</h2>
+            <hr />
 
-            <asp:SqlDataSource ID="SqlDataSourceCalatorii" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
+            <div class="row mb-4 p-3 bg-white shadow-sm rounded align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Filtrează după destinație:</label>
+                    <asp:DropDownList ID="DropDownList1" runat="server" AutoPostBack="True" 
+                        DataSourceID="SqlDataSourceFiltruCalatorie" 
+                        DataTextField="destination" DataValueField="destination" 
+                        CssClass="form-select" AppendDataBoundItems="True">
+                        <asp:ListItem Value="%">-- Toate destinațiile --</asp:ListItem>
+                    </asp:DropDownList>
+                </div>
+                <div class="col-md-2">
+                    <asp:Button ID="btnShowAll" runat="server" Text="Vezi toate" 
+                        OnClick="btnShowAll_Click" CausesValidation="false" 
+                        CssClass="btn btn-secondary w-100" />
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-5">
+                <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" 
+                    DataKeyNames="trip_id" DataSourceID="SqlDataSourceCalatorii" 
+                    CssClass="table table-hover table-striped mb-0">
+                    <Columns>
+                        <asp:BoundField DataField="destination" HeaderText="Destinație" SortExpression="destination" />
+                        <asp:BoundField DataField="budget" HeaderText="Buget (RON)" SortExpression="budget" DataFormatString="{0:N2}" />
+                        <asp:BoundField DataField="start_date" HeaderText="Data Start" SortExpression="start_date" DataFormatString="{0:yyyy-MM-dd}" />
+                        <asp:BoundField DataField="end_date" HeaderText="Data Final" SortExpression="end_date" DataFormatString="{0:yyyy-MM-dd}" />
+                        
+                        <asp:CommandField ButtonType="Button" ShowEditButton="True" ShowDeleteButton="True" 
+                            CancelText="Anulează" DeleteText="Șterge" EditText="Editează" UpdateText="Salvează">
+                            <ControlStyle CssClass="btn btn-sm btn-outline-primary" />
+                        </asp:CommandField>
+                        <asp:HyperLinkField DataNavigateUrlFields="trip_id" DataNavigateUrlFormatString="Program.aspx?TripID={0}" HeaderText="Program" Text="Vezi">
+                        <ControlStyle CssClass="btn btn-info btn-sm text-white" />
+                        </asp:HyperLinkField>
+                        <asp:HyperLinkField DataNavigateUrlFormatString="Program.aspx?TripID={0}" />
+                        <asp:HyperLinkField DataNavigateUrlFormatString="Program.aspx?TripID={0}" />
+                    </Columns>
+                </asp:GridView>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-4 border-success">
+                        <h4 class="text-success mb-3">➕ Adaugă Călătorie Nouă</h4>
+                        <asp:DetailsView ID="DetailsView1" runat="server" DataSourceID="SqlDataSourceCalatorii" 
+                            DefaultMode="Insert" AutoGenerateRows="False" CssClass="table table-borderless" 
+                            OnItemInserted="DetailsView1_ItemInserted">
+                            <Fields>
+                                <asp:TemplateField HeaderText="Destinație:">
+                                    <InsertItemTemplate>
+                                        <asp:TextBox ID="txtDest" runat="server" Text='<%# Bind("destination") %>' CssClass="form-control" />
+                                        <asp:RequiredFieldValidator ID="rfvDest" runat="server" ControlToValidate="txtDest" 
+                                            ErrorMessage="Destinația obligatorie!" ForeColor="Red" Display="Dynamic" 
+                                            ValidationGroup="GrupAdaugare" />
+                                    </InsertItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Buget:">
+                                    <InsertItemTemplate>
+                                        <asp:TextBox ID="txtBudget" runat="server" Text='<%# Bind("budget") %>' CssClass="form-control" />
+                                        <asp:RequiredFieldValidator ID="rfvB" runat="server" ControlToValidate="txtBudget" 
+                                            ErrorMessage="Puneți bugetul!" ForeColor="Red" Display="Dynamic" 
+                                            ValidationGroup="GrupAdaugare" />
+                                        <asp:RangeValidator ID="rvB" runat="server" ControlToValidate="txtBudget" 
+                                            MinimumValue="1" MaximumValue="999999" Type="Double" 
+                                            ErrorMessage="Buget invalid!" ForeColor="Red" Display="Dynamic" 
+                                            ValidationGroup="GrupAdaugare" />
+                                    </InsertItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Data Start:">
+                                    <InsertItemTemplate>
+                                        <asp:TextBox ID="txtStart" runat="server" Text='<%# Bind("start_date") %>' TextMode="Date" CssClass="form-control" />
+                                        <asp:RequiredFieldValidator ID="rfvS" runat="server" ControlToValidate="txtStart" 
+                                            ErrorMessage="Data start?" ForeColor="Red" Display="Dynamic" 
+                                            ValidationGroup="GrupAdaugare" />
+                                    </InsertItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:TemplateField HeaderText="Data Final:">
+                                    <InsertItemTemplate>
+                                        <asp:TextBox ID="txtEnd" runat="server" Text='<%# Bind("end_date") %>' TextMode="Date" CssClass="form-control" />
+                                        <asp:CompareValidator ID="cvD" runat="server" ControlToValidate="txtEnd" ControlToCompare="txtStart" 
+                                            Operator="GreaterThanEqual" Type="Date" ErrorMessage="Data finală eronată!" 
+                                            ForeColor="Red" Display="Dynamic" ValidationGroup="GrupAdaugare" />
+                                    </InsertItemTemplate>
+                                </asp:TemplateField>
+
+                                <asp:CommandField InsertText="Salvează Călătoria" ShowInsertButton="True" ValidationGroup="GrupAdaugare">
+                                    <ControlStyle CssClass="btn btn-success w-100" />
+                                </asp:CommandField>
+                            </Fields>
+                        </asp:DetailsView>
+                    </div>
+                </div>
+            </div>
+
+            <asp:SqlDataSource ID="SqlDataSourceFiltruCalatorie" runat="server" 
+                ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
+                SelectCommand="SELECT DISTINCT [destination] FROM [Calatorie] ORDER BY [destination]">
+            </asp:SqlDataSource>
+
+            <asp:SqlDataSource ID="SqlDataSourceCalatorii" runat="server" 
+                ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
                 DeleteCommand="DELETE FROM [Calatorie] WHERE [trip_id] = @trip_id" 
                 InsertCommand="INSERT INTO [Calatorie] ([destination], [budget], [start_date], [end_date]) VALUES (@destination, @budget, @start_date, @end_date)" 
-                SelectCommand="SELECT [destination], [budget], [start_date], [end_date], [trip_id] FROM [Calatorie]" 
+                SelectCommand="SELECT * FROM [Calatorie] WHERE ([destination] LIKE @destination OR @destination = '%')" 
                 UpdateCommand="UPDATE [Calatorie] SET [destination] = @destination, [budget] = @budget, [start_date] = @start_date, [end_date] = @end_date WHERE [trip_id] = @trip_id">
-                <DeleteParameters>
-                    <asp:Parameter Name="trip_id" Type="Int32" />
-                </DeleteParameters>
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="DropDownList1" Name="destination" PropertyName="SelectedValue" Type="String" DefaultValue="%" />
+                </SelectParameters>
+                <DeleteParameters><asp:Parameter Name="trip_id" Type="Int32" /></DeleteParameters>
                 <InsertParameters>
-                    <asp:Parameter Name="destination" Type="String" />
-                    <asp:Parameter Name="budget" Type="Decimal" />
-                    <asp:Parameter DbType="Date" Name="start_date" />
-                    <asp:Parameter DbType="Date" Name="end_date" />
+                    <asp:Parameter Name="destination" Type="String" /><asp:Parameter Name="budget" Type="Decimal" />
+                    <asp:Parameter DbType="Date" Name="start_date" /><asp:Parameter DbType="Date" Name="end_date" />
                 </InsertParameters>
                 <UpdateParameters>
-                    <asp:Parameter Name="destination" Type="String" />
-                    <asp:Parameter Name="budget" Type="Decimal" />
-                    <asp:Parameter DbType="Date" Name="start_date" />
-                    <asp:Parameter DbType="Date" Name="end_date" />
+                    <asp:Parameter Name="destination" Type="String" /><asp:Parameter Name="budget" Type="Decimal" />
+                    <asp:Parameter DbType="Date" Name="start_date" /><asp:Parameter DbType="Date" Name="end_date" />
                     <asp:Parameter Name="trip_id" Type="Int32" />
                 </UpdateParameters>
             </asp:SqlDataSource>
-
-            <hr />
-            <h3>Adaugă Călătorie Nouă</h3>
-
-            <asp:DetailsView ID="DetailsView1" runat="server" DataSourceID="SqlDataSourceCalatorii" DefaultMode="Insert" AutoGenerateRows="False" CssClass="table table-bordered w-50" OnItemInserted="DetailsView1_ItemInserted">
-                   <Fields>
-        <asp:TemplateField HeaderText="Destinație:">
-            <InsertItemTemplate>
-                <asp:TextBox ID="txtDest" runat="server" Text='<%# Bind("destination") %>' CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvDest" runat="server" ControlToValidate="txtDest" 
-                    ErrorMessage="Destinația este obligatorie!" ForeColor="Red" Display="Dynamic" />
-            </InsertItemTemplate>
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="Buget:">
-            <InsertItemTemplate>
-                <asp:TextBox ID="txtBudget" runat="server" Text='<%# Bind("budget") %>' CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvBudget" runat="server" ControlToValidate="txtBudget" 
-                    ErrorMessage="Introduceți bugetul!" ForeColor="Red" Display="Dynamic" />
-                <asp:RangeValidator ID="rvBudget" runat="server" ControlToValidate="txtBudget" 
-                    MinimumValue="1" MaximumValue="1000000" Type="Double" 
-                    ErrorMessage="Bugetul trebuie să fie între 1 și 1.000.000!" ForeColor="Red" Display="Dynamic" />
-            </InsertItemTemplate>
-        </asp:TemplateField>
-    
-        <asp:TemplateField HeaderText="Data Start:">
-            <InsertItemTemplate>
-                <asp:TextBox ID="txtStart" runat="server" Text='<%# Bind("start_date") %>' TextMode="Date" CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvStart" runat="server" ControlToValidate="txtStart" 
-                    ErrorMessage="Alegeți data de start!" ForeColor="Red" Display="Dynamic" />
-            </InsertItemTemplate>
-        </asp:TemplateField>
-
-        <asp:TemplateField HeaderText="Data Final:">
-            <InsertItemTemplate>
-                <asp:TextBox ID="txtEnd" runat="server" Text='<%# Bind("end_date") %>' TextMode="Date" CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvEnd" runat="server" ControlToValidate="txtEnd" 
-                    ErrorMessage="Alegeți data finală!" ForeColor="Red" Display="Dynamic" />
-            
-                <asp:CompareValidator ID="cvDates" runat="server" 
-                    ControlToValidate="txtEnd" 
-                    ControlToCompare="txtStart" 
-                    Operator="GreaterThanEqual" 
-                    Type="Date" 
-                    ErrorMessage="Data finală nu poate fi înainte de data de start!" 
-                    ForeColor="Red" Display="Dynamic" />
-            </InsertItemTemplate>
-        </asp:TemplateField>
-
-        <asp:CommandField InsertText="Salvează Călătoria" ShowInsertButton="True">
-            <ControlStyle CssClass="btn btn-success" />
-        </asp:CommandField>
-    </Fields>   
-            </asp:DetailsView>
         </div>
     </form>
 </body>
