@@ -5,7 +5,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+<style>
+    body { font: 14px sans-serif; background: whitesmoke; color: darkslategray; padding: 40px 20px; }
+    
+    .main-card { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px silver; }
+    
+    .section-header { font-size: 20px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: black; }
+
+    .modern-grid { width: 100%; border-collapse: collapse; }
+    .modern-grid tr { display: flex; flex-direction: column; border: 1px solid lightgray; border-radius: 8px; margin-bottom: 12px; padding: 15px; }
+    .modern-grid tr:hover { border-color: indigo; background: snow; }
+    .modern-grid th { display: none; }
+    .modern-grid td { border: none; padding: 2px 0; }
+
+    .dest-name { font-size: 16px; font-weight: bold; color: black; }
+    .dest-info { font-size: 12px; color: gray; }
+    .dest-price { font-weight: bold; color: indigo; margin-top: 5px; }
+
+    .input-field { width: 100%; padding: 10px; border: 1px solid silver; border-radius: 6px; margin-top: 5px; outline: none; }
+    .input-field:focus { border-color: indigo; }
+    
+    .btn-primary { background: indigo; color: white; padding: 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+    .btn-primary:hover { opacity: 0.8; }
+    
+    .btn-outline { color: gray; border: 1px solid silver; padding: 5px 10px; border-radius: 4px; font-size: 12px; text-decoration: none; display: inline-block; margin-top: 8px; }
+    .btn-outline:hover { background: whitesmoke; color: indigo; border-color: indigo; }
+
+    .filter-box { margin-bottom: 25px; display: flex; gap: 10px; }
+</style>
 </head>
+
 <body class="bg-light">
     <form id="form1" runat="server">
         <div class="container mt-4">

@@ -16,6 +16,8 @@ namespace TripPlanner
 
             if (!IsPostBack)
             {
+                IncarcaDateTransport();
+
                 string activitateDinCatalog = Request.QueryString["SelectedAct"];
                 if (!string.IsNullOrEmpty(activitateDinCatalog))
                 {
@@ -299,6 +301,54 @@ namespace TripPlanner
                     Response.Redirect("Program.aspx?TripID=" + tripId);
                 }
             }
+        }
+
+        protected void btnTransport_Click(object sender, EventArgs e)
+        {
+            string tripId = Request.QueryString["TripID"];
+
+            if (!string.IsNullOrEmpty(tripId))
+            {
+                Response.Redirect("Transport.aspx?TripID=" + tripId);
+            }
+        }
+
+        private void IncarcaDateTransport()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ConnectionStringCalatorii"].ConnectionString;
+
+            string tripId = Request.QueryString["TripID"];
+            if (string.IsNullOrEmpty(tripId)) return;
+
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                string sql = "SELECT directie, tip_transport, cost FROM Transport WHERE trip_id = @tid";
+                SqlDataAdapter da = new SqlDataAdapter(sql, con);
+                da.SelectCommand.Parameters.AddWithValue("@tid", tripId);
+
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                DetailsView3.DataSource = dt;
+                DetailsView3.DataBind();
+
+                decimal total = 0;
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row["cost"] != DBNull.Value)
+                    {
+                        total += Convert.ToDecimal(row["cost"]);
+                    }
+                }
+
+                lblCostTransport.Text = total.ToString("N2") + " €";
+            }
+        }
+
+        protected void DetailsView3_PageIndexChanging(object sender, DetailsViewPageEventArgs e)
+        {
+            DetailsView3.PageIndex = e.NewPageIndex;
+            IncarcaDateTransport();
         }
     }
 }

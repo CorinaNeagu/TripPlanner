@@ -4,15 +4,41 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>Pagina Activitati</title>
+    <style>
+    body { font: 14px sans-serif; background: whitesmoke; color: #333; padding: 20px; }
+    
+    .container { max-width: 800px; margin: 40px auto; background: white; padding: 25px; border-radius: 6px; border: 1px solid lightgray; }
+    
+    h2 { font-size: 18px; margin-bottom: 15px; color: black; }
+    
+    .filter-section { display: flex; gap: 8px; margin-bottom: 20px; }
+    select, input { padding: 6px; border: 1px solid silver; border-radius: 3px; font-size: 13px; }
+
+    .modern-grid { width: 100%; border-collapse: collapse; }
+    .modern-grid tr { display: flex; align-items: center; border: 1px solid #eee; margin-bottom: 8px; padding: 10px; border-radius: 4px; }
+    .modern-grid tr:hover { background: azure; border-color: skyblue; }
+    .modern-grid td { border: none; padding: 4px 8px; }
+    .modern-grid th { display: none; }
+
+    .badge { background: aliceblue; color: darkblue; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+    
+    .btn-choose { background: indigo; color: white; border: none; padding: 7px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-choose:hover { background: darkslateblue; }
+    
+    .btn-back { color: gray; font-size: 12px; text-decoration: none; }
+    
+    .stats-box { background: ghostwhite; border-left: 3px solid indigo; padding: 12px; margin: 15px 0; font-size: 13px; }
+</style>
 </head>
+
 <body>
     <form id="form1" runat="server">
         <div class="container">
-            <h2>⚙ Gestiune Catalog Activități</h2>
+            <h2>Gestiune&nbsp; Activitati</h2>
 
             <div class="filter-section">
-                <strong>🔍 Filtrează după Categorie:</strong> 
+                <strong>🔍 Filtreaza după Categorie:</strong> 
                 <asp:DropDownList ID="ddlFiltruCategorie" runat="server" AutoPostBack="True" AppendDataBoundItems="True">
                     <asp:ListItem Value="%">Toate categoriile</asp:ListItem>
                     <asp:ListItem>Cultural</asp:ListItem>
@@ -49,7 +75,7 @@
     </UpdateParameters>
 </asp:SqlDataSource>
 
-            <h3>Listă Activități</h3>
+            <h3>Lista Activitati</h3>
             <asp:GridView ID="GridView1" runat="server" DataKeyNames="activitate_id" DataSourceID="SqlDataSource1" AutoGenerateColumns="False" CssClass="modern-grid">
     <Columns>
         <asp:CommandField ShowDeleteButton="True" ShowEditButton="True" CancelText="Anulează" UpdateText="Salvează" EditText="Editează" DeleteText="Șterge" />
@@ -84,7 +110,7 @@
             <br />
 
             <asp:Label ID="lblError" runat="server" ForeColor="Red" Font-Bold="true" EnableViewState="false"></asp:Label>
-            <h3>➕ Adaugă Activitate Nouă</h3>
+            <h3>Adauga Activitate Noua</h3>
            <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateRows="False" DataSourceID="SqlDataSource1" DefaultMode="Insert">
     <Fields>
         <asp:TemplateField HeaderText="Nume:">
@@ -93,7 +119,7 @@
                 <asp:RequiredFieldValidator ID="rfvNume" runat="server" 
                     ControlToValidate="txtNume" ErrorMessage="* Nume obligatoriu" 
                     ForeColor="Red" Display="Dynamic" 
-                    ValidationGroup="GrupCatalog" /> <%-- GRUP ADĂUGAT --%>
+                    ValidationGroup="GrupCatalog" /> 
             </InsertItemTemplate>
         </asp:TemplateField>
 
@@ -109,7 +135,7 @@
                 <asp:RequiredFieldValidator ID="rfvCat" runat="server" 
                     ControlToValidate="ddlInsertCategorie" InitialValue="" 
                     ErrorMessage="* Alege categoria" ForeColor="Red" Display="Dynamic" 
-                    ValidationGroup="GrupCatalog" /> <%-- GRUP ADĂUGAT --%>
+                    ValidationGroup="GrupCatalog" /> 
             </InsertItemTemplate>
         </asp:TemplateField>
 
@@ -119,16 +145,16 @@
                 <asp:RequiredFieldValidator ID="rfvPret" runat="server" 
                     ControlToValidate="txtPret" ErrorMessage="* Preț obligatoriu" 
                     ForeColor="Red" Display="Dynamic" 
-                    ValidationGroup="GrupCatalog" /> <%-- GRUP ADĂUGAT --%>
+                    ValidationGroup="GrupCatalog" /> <
                 <asp:RangeValidator ID="rvPret" runat="server" 
                     ControlToValidate="txtPret" MinimumValue="0" MaximumValue="10000" Type="Double" 
                     ErrorMessage="* Preț invalid" ForeColor="Red" Display="Dynamic" 
-                    ValidationGroup="GrupCatalog" /> <%-- GRUP ADĂUGAT --%>
+                    ValidationGroup="GrupCatalog" />
             </InsertItemTemplate>
         </asp:TemplateField>
 
         <asp:CommandField ShowInsertButton="True" InsertText="Salvează în Catalog" 
-            ValidationGroup="GrupCatalog" /> <%-- BUTONUL DECLANȘEAZĂ DOAR GRUPUL --%>
+            ValidationGroup="GrupCatalog" /> 
     </Fields>
 </asp:DetailsView>
 
@@ -137,7 +163,7 @@
             <asp:Label ID="lblStatistici" runat="server" Text="Se calculează statisticile..."></asp:Label>
         </div>
 
-            <asp:Button ID="btnInapoiProgram" runat="server" CausesValidation="False" OnClick="btnInapoiProgram_Click" Text="Button" />
+            <asp:Button ID="btnInapoiProgram" runat="server" CausesValidation="False" OnClick="btnInapoiProgram_Click" Text="Inapoi" />
 
             <br />
         </div>

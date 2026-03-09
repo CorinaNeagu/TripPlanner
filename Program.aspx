@@ -4,7 +4,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+<style>
+    body { font: 14px sans-serif; background: whitesmoke; color: darkslategray; padding: 20px; }
+    
+    .main-card { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px silver; }
+    
+    .section-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: black; }
+
+    .modern-grid { width: 100%; border-collapse: collapse; }
+    .modern-grid tr { display: flex; flex-direction: column; border: 1px solid lightgray; border-radius: 6px; margin-bottom: 10px; padding: 15px; }
+    .modern-grid tr:hover { border-color: indigo; background: ghostwhite; }
+    .modern-grid td { border: none; padding: 4px 0; }
+    .modern-grid th { display: none; }
+    
+    .input-field { width: 100%; padding: 10px; border: 1px solid silver; border-radius: 4px; outline: none; }
+    .input-field:focus { border-color: indigo; }
+    
+    .btn-primary { background: indigo; color: white; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
+    .btn-primary:hover { opacity: 0.8; }
+    
+    .total-display { font-size: 20px; font-weight: 800; color: indigo; text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid lightgray; }
+</style>
 </head>
+
 <body>
     <form id="form1" runat="server">
         <div>
@@ -138,7 +160,30 @@
             </asp:DetailsView>
 
             <div style="margin: 20px 0; font-size: 1.2em; font-weight: bold; color: #2c3e50;">
-                <asp:Label ID="lblTotalGeneral" runat="server" Text="Total Buget: 0.00 €"></asp:Label>
+                <asp:Label ID="lblCostTransport" runat="server" Text="Cost Transport:"></asp:Label>
+                <asp:Button ID="btnTransport" runat="server" 
+                    CausesValidation="False" 
+                    OnClick="btnTransport_Click" 
+                    Text="Optiuni Transport" />
+                <asp:DetailsView ID="DetailsView3" runat="server" 
+                    AutoGenerateRows="False" 
+                    GridLines="None" 
+                    CssClass="table-summary" 
+                    Width="300px" 
+                    BorderStyle="None" 
+                    AllowPaging="True"
+                    OnPageIndexChanging="DetailsView3_PageIndexChanging"
+                    >
+                    <PagerSettings Mode="NextPrevious" 
+                   NextPageText="Mergi la Întors" 
+                   PreviousPageText="Înapoi la Dus" />
+                    <Fields>
+                        <asp:BoundField DataField="directie" HeaderText="Direcție:" HeaderStyle-Font-Bold="true" />
+                        <asp:BoundField DataField="tip_transport" HeaderText="Tip:" HeaderStyle-Font-Bold="true" />
+                        <asp:BoundField DataField="cost" HeaderText="Preț (€):" DataFormatString="{0:N2}" HeaderStyle-Font-Bold="true" />
+                    </Fields>
+                </asp:DetailsView>
+                <asp:SqlDataSource ID="SqlDataSource3" runat="server"></asp:SqlDataSource>
             </div>
 
             <asp:Button ID="btnVeziActivitati" 
@@ -148,8 +193,11 @@
                     OnClick="btnVeziActivitati_Click" 
                     Text="Vezi Activitati" />
             <br />
-            <asp:HyperLink ID="lnkBack" runat="server" NavigateUrl="Calatorii.aspx">⬅ Înapoi la listă</asp:HyperLink>
+                <asp:Label ID="lblTotalGeneral" runat="server" Text="Total Buget: 0.00 €"></asp:Label>
         </div>
+        <p>
+            <asp:HyperLink ID="lnkBack" runat="server" NavigateUrl="Calatorii.aspx">⬅ Înapoi la listă</asp:HyperLink>
+        </p>
     </form>
 </body>
 </html>
