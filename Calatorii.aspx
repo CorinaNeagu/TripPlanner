@@ -40,7 +40,7 @@
                         <asp:BoundField DataField="end_date" HeaderText="Data Final" SortExpression="end_date" DataFormatString="{0:yyyy-MM-dd}" />
                         
                         <asp:CommandField ButtonType="Button" ShowEditButton="True" ShowDeleteButton="True" 
-                            CancelText="Anulează" DeleteText="Șterge" EditText="Editează" UpdateText="Salvează">
+                            CancelText="Anulează" DeleteText="Șterge" EditText="Editează" UpdateText="Salvează" ShowSelectButton="True">
                             <ControlStyle CssClass="btn btn-sm btn-outline-primary" />
                         </asp:CommandField>
                         <asp:HyperLinkField DataNavigateUrlFields="trip_id" DataNavigateUrlFormatString="Program.aspx?TripID={0}" HeaderText="Program" Text="Vezi">
@@ -50,6 +50,16 @@
                         <asp:HyperLinkField DataNavigateUrlFormatString="Program.aspx?TripID={0}" />
                     </Columns>
                 </asp:GridView>
+                <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSourceActivitatiByOras">
+                    <Columns>
+                        <asp:BoundField DataField="descriere" HeaderText="descriere" SortExpression="descriere" />
+                    </Columns>
+                </asp:GridView>
+                <asp:SqlDataSource ID="SqlDataSourceActivitatiByOras" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" SelectCommand="GetActivitatiByOras" SelectCommandType="StoredProcedure">
+                    <SelectParameters>
+                        <asp:ControlParameter ControlID="GridView1" Name="TripID" PropertyName="SelectedValue" Type="Int32" />
+                    </SelectParameters>
+                </asp:SqlDataSource>
             </div>
 
             <div class="row">
