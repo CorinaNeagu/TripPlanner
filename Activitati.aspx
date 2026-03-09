@@ -14,7 +14,7 @@
             <h2>Gestiune&nbsp; Activitati</h2>
 
             <div class="filter-section">
-                <strong>Filtreaza după Categorie:</strong> 
+                <strong>Filtreaza dupa Categorie:</strong> 
                 <asp:DropDownList ID="ddlFiltruCategorie" runat="server" AutoPostBack="True" AppendDataBoundItems="True">
                     <asp:ListItem Value="%">Toate categoriile</asp:ListItem>
                     <asp:ListItem>Cultural</asp:ListItem>
@@ -115,7 +115,7 @@
             </InsertItemTemplate>
         </asp:TemplateField>
 
-        <asp:TemplateField HeaderText="Preț (€):">
+        <asp:TemplateField HeaderText="Pret (€):">
             <InsertItemTemplate>
                 <asp:TextBox ID="txtPret" runat="server" Text='<%# Bind("pret") %>'></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvPret" runat="server" 
@@ -124,7 +124,7 @@
                     ValidationGroup="GrupCatalog" /> <
                 <asp:RangeValidator ID="rvPret" runat="server" 
                     ControlToValidate="txtPret" MinimumValue="0" MaximumValue="10000" Type="Double" 
-                    ErrorMessage="* Preț invalid" ForeColor="Red" Display="Dynamic" 
+                    ErrorMessage="* Pret invalid" ForeColor="Red" Display="Dynamic" 
                     ValidationGroup="GrupCatalog" />
             </InsertItemTemplate>
         </asp:TemplateField>

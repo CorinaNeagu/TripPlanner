@@ -36,7 +36,7 @@
                 </Fields>
             </asp:DetailsView>
 
-            <h2 class="section-title">Activități Planificate</h2>
+            <h2 class="section-title">Activitati Planificate</h2>
             <asp:GridView ID="GridView1" runat="server" 
                     AutoGenerateColumns="False" 
                     DataKeyNames="itinerariu_id" 
@@ -80,7 +80,7 @@
                 </DeleteParameters>
             </asp:SqlDataSource>
 
-            <h2 class="section-title">Adaugă Activitate Nouă</h2>
+            <h2 class="section-title">Adauga Activitate Noua</h2>
             <asp:DetailsView ID="DetailsView1" runat="server" 
                     AutoGenerateRows="False" 
                     DataSourceID="SqlDataSource1" 
@@ -187,7 +187,7 @@
         <asp:Button ID="btnVeziActivitati" runat="server" CausesValidation="False" OnClick="btnVeziActivitati_Click" Text="Vezi Catalog Activitati" Width="100%" />
         
         <div style="margin-top: 30px; padding: 10px; background: white; border-radius: 5px; text-align: center; border: 1px solid indigo;">
-            <span style="font-size: 0.9em; color: #666;">Total Estimata:</span><br />
+            <span style="font-size: 0.9em; color: #666;">Total Estimat:</span><br />
             <asp:Label ID="lblTotalGeneral" runat="server" Text="Total: 0.00 €" style="font-size: 1.4em; font-weight: bold; color: indigo;"></asp:Label>
         </div>
     </div>
@@ -213,6 +213,15 @@
 
             <asp:SqlDataSource ID="SqlDataSource3" runat="server"></asp:SqlDataSource>
         </div>
+
+        <label for="ddlChartType"><strong>Alege tipul de graf:</strong> </label>
+            <asp:DropDownList ID="ddlChartType" runat="server" AutoPostBack="true" 
+                OnSelectedIndexChanged="ddlChartType_SelectedIndexChanged">
+                <asp:ListItem Text="-- Selectează Grafic --" Value="" Selected="True" />
+                <asp:ListItem Text="Distribuție Costuri (Pie)" Value="Pie" />
+                <asp:ListItem Text="Buget per Destinație (Bars)" Value="Bars" />
+                <asp:ListItem Text="Evoluție Activități (Line)" Value="Line" />
+            </asp:DropDownList>
 
         <p style="margin-top:30px">
             <asp:HyperLink ID="lnkBack" runat="server" NavigateUrl="Calatorii.aspx">⬅ Înapoi la listă</asp:HyperLink>

@@ -22,12 +22,11 @@ namespace TripPlanner
 
             using (SqlConnection con = new SqlConnection(cs))
             {
-                // AM ADĂUGAT c.is_selected ÎN SELECT
                 string sql = @"
-            SELECT DISTINCT c.cazare_id, c.hotel_name, c.price, c.trip_id, c.is_selected 
-            FROM Cazare c
-            JOIN Calatorie cal_h ON c.trip_id = cal_h.trip_id
-            WHERE cal_h.destination = (SELECT destination FROM Calatorie WHERE trip_id = @tid)";
+                SELECT DISTINCT c.cazare_id, c.hotel_name, c.price, c.trip_id, c.is_selected 
+                FROM Cazare c
+                JOIN Calatorie cal_h ON c.trip_id = cal_h.trip_id
+                WHERE cal_h.destination = (SELECT destination FROM Calatorie WHERE trip_id = @tid)";
 
                 SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.Parameters.AddWithValue("@tid", tid);
@@ -45,10 +44,9 @@ namespace TripPlanner
             using (SqlConnection con = new SqlConnection(cs))
             {
                 con.Open();
-                // Resetăm tot ce era selectat pentru acest trip și activăm noua alegere
                 string sql = @"
-            UPDATE Cazare SET is_selected = 0 WHERE trip_id = @tid;
-            UPDATE Cazare SET is_selected = 1 WHERE cazare_id = @cid;";
+                UPDATE Cazare SET is_selected = 0 WHERE trip_id = @tid;
+                UPDATE Cazare SET is_selected = 1 WHERE cazare_id = @cid;";
 
                 using (SqlCommand cmd = new SqlCommand(sql, con))
                 {

@@ -92,6 +92,12 @@
     <Reference Include="Microsoft.AspNet.FriendlyUrls">
       <HintPath>packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.2\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
     </Reference>
+    <Reference Include="ZedGraph">
+      <HintPath>..\..\..\Downloads\ViewChart\GvVs2008\Bin\Zedgraph\ZedGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="ZedGraph.Web">
+      <HintPath>..\..\..\Downloads\ViewChart\GvVs2008\Bin\Zedgraph\ZedGraph.Web.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -107,6 +113,7 @@
     </Content>
     <Content Include="Calatorii.aspx" />
     <Content Include="Cazare.aspx" />
+    <Content Include="Charts.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -221,6 +228,13 @@
     </Compile>
     <Compile Include="Cazare.aspx.designer.cs">
       <DependentUpon>Cazare.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Charts.aspx.cs">
+      <DependentUpon>Charts.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Charts.aspx.designer.cs">
+      <DependentUpon>Charts.aspx</DependentUpon>
     </Compile>
     <Compile Include="Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>

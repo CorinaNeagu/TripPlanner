@@ -4,7 +4,7 @@
 
     <main>
         <div class="text-center" style="margin-top: 50px;">
-            <h1>✈️ Trip Planner </h1>
+            <h1>Trip Planner </h1>
             <p class="lead">Gestioneaza calatoriile, itinerariile si activitatile dintr-un singur loc.</p>
             <hr />
         </div>

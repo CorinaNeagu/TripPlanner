@@ -8,7 +8,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <h2>Informații Călătorie Curentă</h2>
+            <h2>Informatii Calatorie</h2>
             
             <asp:SqlDataSource ID="SqlDataSourceInfo" runat="server" 
                 ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
@@ -31,7 +31,7 @@
 
             <hr />
 
-            <h2>Opțiuni de Cazare</h2>
+            <h2>Optiuni de Cazare</h2>
             <asp:GridView ID="gvCazare" runat="server" 
                 AutoGenerateColumns="False" 
                 DataKeyNames="cazare_id" 
@@ -60,19 +60,19 @@
                         EditText="Editează" DeleteText="Șterge" />
                 </Columns>
                 <EmptyDataTemplate>
-                    Nu există hoteluri în catalog.
+                    Nu exista hoteluri.
                 </EmptyDataTemplate>
             </asp:GridView>
 
             <hr />
 
-            <h3>Adaugă Hotel Nou</h3>
+            <h3>Adauga Hotel Nou</h3>
             Hotel: <asp:TextBox ID="txtHotel" runat="server"></asp:TextBox>
-            Preț (€): <asp:TextBox ID="txtPret" runat="server"></asp:TextBox>
+            Pret (€): <asp:TextBox ID="txtPret" runat="server"></asp:TextBox>
             <asp:Button ID="btnAdd" runat="server" Text="Adaugă în listă" OnClick="btnAdd_Click" />
 
             <br /><br />
-            <asp:LinkButton ID="btnBack" runat="server" OnClick="btnAlegeCazare_Click">⬅ Înapoi la Programul Călătoriei</asp:LinkButton>
+            <asp:LinkButton ID="btnBack" runat="server" OnClick="btnAlegeCazare_Click">Inapoi</asp:LinkButton>
         </div>
     </form>
 </body>

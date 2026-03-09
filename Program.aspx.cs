@@ -175,7 +175,6 @@ namespace TripPlanner
                 SqlCommand cmd = new SqlCommand("GetTotalBugetTrip", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                // Parametrul InputOutput conform exemplului de curs
                 SqlParameter pTrip = new SqlParameter("@TripID", SqlDbType.Int)
                 {
                     Value = int.Parse(tripIdStr),
@@ -183,7 +182,6 @@ namespace TripPlanner
                 };
                 cmd.Parameters.Add(pTrip);
 
-                // Parametrii de ieșire
                 cmd.Parameters.Add(new SqlParameter("@TotalActivitati", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output });
                 cmd.Parameters.Add(new SqlParameter("@TotalTransport", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output });
                 cmd.Parameters.Add(new SqlParameter("@TotalCazare", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output });
@@ -442,19 +440,16 @@ namespace TripPlanner
 
             using (SqlConnection con = new SqlConnection(cs))
             {
-                // Apelăm funcția direct
                 string sql = "SELECT dbo.GetBudgetStatus(@tid)";
                 SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.Parameters.AddWithValue("@tid", tripId);
 
                 con.Open();
 
-                // Preluăm mesajul generat de SQL
                 string statusMesaj = cmd.ExecuteScalar().ToString();
 
                 lblStatusBuget.Text = statusMesaj;
 
-                // Opțional: Schimbăm culoarea textului dacă există o depășire
                 if (statusMesaj.Contains("Depasire"))
                 {
                     lblStatusBuget.ForeColor = System.Drawing.Color.Red;
@@ -465,6 +460,19 @@ namespace TripPlanner
                 }
             }
         }
+
+        protected void ddlChartType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string tripID = Request.QueryString["TripID"];
+            string selectedType = ddlChartType.SelectedValue;
+
+            if (!string.IsNullOrEmpty(tripID))
+            {
+                
+                Response.Redirect("Charts.aspx?TripID=" + tripID + "&type=" + selectedType);
+            }
+        }
+
 
     }
 }

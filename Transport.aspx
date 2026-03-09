@@ -10,7 +10,7 @@
         <div>
             <asp:Label ID="Label1" runat="server" Text="Selectați Detalii Transport"></asp:Label>
 
-            <p>Direcție:</p>
+            <p>Directie:</p>
             <asp:RadioButtonList ID="rblSens" runat="server" RepeatDirection="Horizontal">
                 <asp:ListItem Value="DUS" Selected="True"> Dus</asp:ListItem>
                 <asp:ListItem Value="INTORS"> Intors</asp:ListItem>
