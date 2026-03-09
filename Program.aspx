@@ -48,30 +48,32 @@
             </asp:GridView>
             
             <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
-                ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
-                SelectCommand="GetItinerariuCuTotal" 
-                SelectCommandType="StoredProcedure"
-                OnSelected="SqlDataSource1_Selected"
-                InsertCommand="INSERT INTO [Itinerariu] ([trip_id], [descriere], [data], [ora], [cost_total]) VALUES (@trip_id, @descriere, @data, @ora, @cost_total)" 
-                DeleteCommand="DELETE FROM [Itinerariu] WHERE [itinerariu_id] = @itinerariu_id">
+    ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
+    SelectCommand="GetItinerariuCuTotal" 
+    SelectCommandType="StoredProcedure"
+    OnSelected="SqlDataSource1_Selected"
+    OnInserted="SqlDataSource1_Inserted"
+    InsertCommand="INSERT INTO [Itinerariu] ([trip_id], [descriere], [data], [ora], [cost_total]) VALUES (@trip_id, @descriere, @data, @ora, @cost_total); SET @NewID = SCOPE_IDENTITY();" 
+    DeleteCommand="DELETE FROM [Itinerariu] WHERE [itinerariu_id] = @itinerariu_id">
     
-                <SelectParameters>
-                    <asp:QueryStringParameter Name="TripID" QueryStringField="TripID" Type="Int32" />
-                        <asp:Parameter Name="TotalBuget" Type="Decimal" Direction="Output" />
-                </SelectParameters>
+    <SelectParameters>
+        <asp:QueryStringParameter Name="TripID" QueryStringField="TripID" Type="Int32" />
+        <asp:Parameter Name="TotalBuget" Type="Decimal" Direction="Output" />
+    </SelectParameters>
 
-                <InsertParameters>
-                    <asp:QueryStringParameter Name="trip_id" QueryStringField="TripID" Type="Int32" />
-                    <asp:Parameter Name="descriere" Type="String" />
-                    <asp:Parameter DbType="Date" Name="data" />
-                    <asp:Parameter DbType="Time" Name="ora" /> 
-                    <asp:Parameter Name="cost_total" Type="Decimal" />
-                </InsertParameters>
+    <InsertParameters>
+        <asp:QueryStringParameter Name="trip_id" QueryStringField="TripID" Type="Int32" />
+        <asp:Parameter Name="descriere" Type="String" />
+        <asp:Parameter Name="data" DbType="Date" />
+        <asp:Parameter Name="ora" DbType="Time" /> 
+        <asp:Parameter Name="cost_total" Type="Decimal" />
+        <asp:Parameter Name="NewID" Type="Int32" Direction="Output" />
+    </InsertParameters>
 
-                <DeleteParameters>
-                    <asp:Parameter Name="itinerariu_id" Type="Int32" />
-                </DeleteParameters>
-            </asp:SqlDataSource>
+    <DeleteParameters>
+        <asp:Parameter Name="itinerariu_id" Type="Int32" />
+    </DeleteParameters>
+</asp:SqlDataSource>
 
             <h2 class="section-title">Adaugă Activitate Nouă</h2>
             <asp:DetailsView ID="DetailsView1" runat="server" 

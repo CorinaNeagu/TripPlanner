@@ -105,16 +105,18 @@
         protected void btnSelecteaza_Click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
-            string argumente = btn.CommandArgument; // Acesta va fi de forma "Muzeu|25.00"
+            string argumente = btn.CommandArgument;
             string tripId = Request.QueryString["TripID"];
 
             if (!string.IsNullOrEmpty(argumente) && !string.IsNullOrEmpty(tripId))
             {
                 string[] parti = argumente.Split('|');
-                string numeActivitate = parti[0];
-                string pretActivitate = parti[1];
 
-                Response.Redirect($"Program.aspx?TripID={tripId}&SelectedAct={Server.UrlEncode(numeActivitate)}&PretAct={pretActivitate}");
+                string idActivitate = parti[0];
+                string numeActivitate = parti[1];
+                string pretActivitate = parti[2];
+
+                Response.Redirect($"Program.aspx?TripID={tripId}&ActID={idActivitate}&SelectedAct={Server.UrlEncode(numeActivitate)}&PretAct={pretActivitate}");
             }
         }
 

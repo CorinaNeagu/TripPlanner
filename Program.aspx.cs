@@ -9,6 +9,7 @@ namespace TripPlanner
 {
     public partial class Program : System.Web.UI.Page
     {
+        private int noulIdItinerariu = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
             ConfigurareValidator();
@@ -38,21 +39,63 @@ namespace TripPlanner
         {
             ConfigurareValidator();
         }
+
+        protected void SqlDataSource1_Inserted(object sender, SqlDataSourceStatusEventArgs e)
+        {
+            if (e.Command.Parameters["@NewID"].Value != DBNull.Value)
+            {
+                noulIdItinerariu = Convert.ToInt32(e.Command.Parameters["@NewID"].Value);
+            }
+        }
+
+
         protected void DetailsView1_ItemInserted(object sender, DetailsViewInsertedEventArgs e)
         {
             if (e.Exception == null)
             {
                 string tripId = Request.QueryString["TripID"];
+                string actId = Request.QueryString["ActID"];
+
+                if (!string.IsNullOrEmpty(actId) && noulIdItinerariu > 0)
+                {
+                    SalvareInTabelaLegatura(actId, noulIdItinerariu);
+                }
+
                 Response.Redirect("Program.aspx?TripID=" + tripId);
             }
             else
             {
+    
+                System.Diagnostics.Debug.WriteLine("Eroare Insert Itinerariu: " + e.Exception.Message);
                 e.ExceptionHandled = true;
             }
+        }
 
-            GridView1.DataBind();
-            DetailsView2.DataBind();
-            ConfigurareValidator();
+
+        private void SalvareInTabelaLegatura(string actId, int itinerariuId)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["ConnectionStringCalatorii"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                TextBox txtO = (TextBox)DetailsView1.FindControl("txtOra");
+                TextBox txtC = (TextBox)DetailsView1.FindControl("txtCost");
+
+                string sql = @"INSERT INTO ItinerariuActivitati (itinerariu_id, activitate_id, ora_activitate, pret_total) 
+                               VALUES (@itID, @actID, @ora, @pret)";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@itID", itinerariuId);
+                cmd.Parameters.AddWithValue("@actID", actId);
+                cmd.Parameters.AddWithValue("@ora", string.IsNullOrEmpty(txtO.Text) ? (object)DBNull.Value : txtO.Text);
+
+                decimal pretVal = 0;
+                if (txtC != null && !string.IsNullOrEmpty(txtC.Text)) decimal.TryParse(txtC.Text, out pretVal);
+                cmd.Parameters.AddWithValue("@pret", pretVal);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
 
         protected void DetailsView1_DataBound(object sender, EventArgs e)
@@ -113,7 +156,6 @@ namespace TripPlanner
                 }
             }
 
-            // APELĂM PROCEDURA STOCATĂ PENTRU TOTAL
             AfiseazaTotalPrinProcedura();
         }
 
@@ -247,15 +289,13 @@ namespace TripPlanner
 
         protected void DetailsView1_ItemCommand(object sender, DetailsViewCommandEventArgs e)
         {
-            // Verificăm dacă s-a apăsat butonul de Cancel
             if (e.CommandName == "Cancel")
             {
                 string tripId = Request.QueryString["TripID"];
 
                 if (!string.IsNullOrEmpty(tripId))
                 {
-                    // Redirecționăm către aceeași pagină, dar fără SelectedAct și PretAct în URL
-                    // Acest lucru va goli automat toate TextBox-urile și va reseta DropDown-ul
+
                     Response.Redirect("Program.aspx?TripID=" + tripId);
                 }
             }

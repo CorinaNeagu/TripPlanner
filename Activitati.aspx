@@ -75,7 +75,7 @@
                 <asp:Button ID="btnSelecteaza" runat="server" Text="Alege" 
                     CausesValidation="False" 
                     OnClick="btnSelecteaza_Click" 
-                    CommandArgument='<%# Eval("nume_activitate") + "|" + Eval("pret") %>' />
+                    CommandArgument='<%# Eval("activitate_id") + "|" + Eval("nume_activitate") + "|" + Eval("pret") %>' />
             </ItemTemplate>
         </asp:TemplateField>
     </Columns>
