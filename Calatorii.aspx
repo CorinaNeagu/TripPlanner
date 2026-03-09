@@ -38,7 +38,7 @@
 <body class="bg-light">
     <form id="form1" runat="server">
         <div class="container mt-4">
-            <h2 class="text-primary">✈️ Management Călătorii</h2>
+            <h2 class="text-primary">Management Calatorii</h2>
             <hr />
 
             <div class="row mb-4 p-3 bg-white shadow-sm rounded align-items-end">
@@ -69,7 +69,7 @@
                         <asp:BoundField DataField="end_date" HeaderText="Data Final" SortExpression="end_date" DataFormatString="{0:yyyy-MM-dd}" />
                         
                         <asp:CommandField ButtonType="Button" ShowEditButton="True" ShowDeleteButton="True" 
-                            CancelText="Anulează" DeleteText="Șterge" EditText="Editează" UpdateText="Salvează" ShowSelectButton="True">
+                            CancelText="Anuleaza" DeleteText="Sterge" EditText="Editeaza" UpdateText="Salveaza" ShowSelectButton="True">
                             <ControlStyle CssClass="btn btn-sm btn-outline-primary" />
                         </asp:CommandField>
                         <asp:HyperLinkField DataNavigateUrlFields="trip_id" DataNavigateUrlFormatString="Program.aspx?TripID={0}" HeaderText="Program" Text="Vezi">
@@ -84,7 +84,10 @@
                         <asp:BoundField DataField="descriere" HeaderText="descriere" SortExpression="descriere" />
                     </Columns>
                 </asp:GridView>
-                <asp:SqlDataSource ID="SqlDataSourceActivitatiByOras" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" SelectCommand="GetActivitatiByOras" SelectCommandType="StoredProcedure">
+                <asp:SqlDataSource ID="SqlDataSourceActivitatiByOras" runat="server" 
+                        ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
+                        SelectCommand="GetActivitatiByOras" 
+                        SelectCommandType="StoredProcedure">
                     <SelectParameters>
                         <asp:ControlParameter ControlID="GridView1" Name="TripID" PropertyName="SelectedValue" Type="Int32" />
                     </SelectParameters>
@@ -94,7 +97,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="card shadow-sm p-4 border-success">
-                        <h4 class="text-success mb-3">➕ Adaugă Călătorie Nouă</h4>
+                        <h4 class="text-success mb-3">Adauga Calatorie Noua</h4>
                         <asp:DetailsView ID="DetailsView1" runat="server" DataSourceID="SqlDataSourceCalatorii" 
                             DefaultMode="Insert" AutoGenerateRows="False" CssClass="table table-borderless" 
                             OnItemInserted="DetailsView1_ItemInserted">
@@ -173,6 +176,7 @@
                     <asp:Parameter Name="trip_id" Type="Int32" />
                 </UpdateParameters>
             </asp:SqlDataSource>
+            <asp:Button ID="btnBackHome" runat="server" OnClick="btnBackHome_Click" Text="Inapoi" />
         </div>
     </form>
 </body>

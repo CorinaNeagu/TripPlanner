@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace TripPlanner
@@ -67,14 +68,35 @@ namespace TripPlanner
 
         protected void gvTransport_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
-            int id = Convert.ToInt32(gvTransport.DataKeys[e.RowIndex].Value);
-            using (SqlConnection con = new SqlConnection(cs))
+            lblMesajEroare.Text = "";
+            lblMesajEroare.Visible = false;
+
+            try
             {
-                SqlCommand cmd = new SqlCommand("DELETE FROM Transport WHERE transport_id = @id", con);
-                cmd.Parameters.AddWithValue("@id", id);
-                con.Open();
-                cmd.ExecuteNonQuery();
+                int transportId = Convert.ToInt32(gvTransport.DataKeys[e.RowIndex].Value);
+
+                using (SqlConnection con = new SqlConnection(cs))
+                {
+                    string sql = "DELETE FROM Transport WHERE transport_id = @id";
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    cmd.Parameters.AddWithValue("@id", transportId);
+
+                    con.Open();
+                    int rezultat = cmd.ExecuteNonQuery();
+
+                    if (rezultat > 0)
+                    {
+                        lblMesajEroare.Text = "Inregistrarea a fost stearsa cu succes!";
+                        lblMesajEroare.Visible = true;
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                lblMesajEroare.Text = "Eroare la stergere: " + ex.Message;
+                lblMesajEroare.Visible = true;
+            }
+
             BindTransport();
         }
 
@@ -109,10 +131,17 @@ namespace TripPlanner
 
         protected void btnAdaugaTransport_Click(object sender, EventArgs e)
         {
-            string tripId = Request.QueryString["TripID"];
-            if (string.IsNullOrEmpty(tripId) || rblTransport.SelectedIndex == -1) return;
+            lblMesajEroare.Visible = false;
+            lblMesajEroare.Text = "";
 
-            string sens = rblSens.SelectedValue;
+            string tripId = Request.QueryString["TripID"];
+            if (string.IsNullOrEmpty(tripId) || rblTransport.SelectedIndex == -1)
+            {
+                lblMesajEroare.Text = "Selectati un mijloc de transport!";
+                return;
+            }
+
+            string sens = rblSens.SelectedValue; 
             string tip = rblTransport.SelectedValue;
 
             decimal pret = 0;
@@ -121,28 +150,32 @@ namespace TripPlanner
             else if (pnlAutobuz.Visible) decimal.TryParse(txtPretAutobuz.Text, out pret);
             else if (pnlMasina.Visible) decimal.TryParse(txtPretMasina.Text, out pret);
 
+            if (pret <= 0)
+            {
+                lblMesajEroare.Text = "Introduceti un pret valid!";
+                return;
+            }
+
             using (SqlConnection con = new SqlConnection(cs))
             {
+                con.Open();
+
                 string sqlCheck = "SELECT COUNT(*) FROM Transport WHERE trip_id = @tid AND directie = @dir";
                 SqlCommand cmdCheck = new SqlCommand(sqlCheck, con);
                 cmdCheck.Parameters.AddWithValue("@tid", tripId);
                 cmdCheck.Parameters.AddWithValue("@dir", sens);
 
-                con.Open(); 
-
                 int existaDeja = (int)cmdCheck.ExecuteScalar();
 
-                string sqlFinal;
                 if (existaDeja > 0)
                 {
-                    sqlFinal = "UPDATE Transport SET tip_transport = @tip, cost = @cost WHERE trip_id = @tid AND directie = @dir";
-                }
-                else
-                {
-                    sqlFinal = "INSERT INTO Transport (trip_id, tip_transport, cost, directie) VALUES (@tid, @tip, @cost, @dir)";
+                    lblMesajEroare.Text = $"Aveti deja o optiune selectata pentru {sens}. Stergeti inregistrarea din tabel pentru a alege alta.";
+                    lblMesajEroare.Visible = true; 
+                    return; 
                 }
 
-                SqlCommand cmd = new SqlCommand(sqlFinal, con);
+                string sqlInsert = "INSERT INTO Transport (trip_id, tip_transport, cost, directie) VALUES (@tid, @tip, @cost, @dir)";
+                SqlCommand cmd = new SqlCommand(sqlInsert, con);
                 cmd.Parameters.AddWithValue("@tid", tripId);
                 cmd.Parameters.AddWithValue("@tip", tip);
                 cmd.Parameters.AddWithValue("@cost", pret);
@@ -154,5 +187,7 @@ namespace TripPlanner
             BindTransport();
             ResetForm();
         }
+
+       
     }
 }

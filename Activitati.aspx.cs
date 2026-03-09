@@ -83,7 +83,7 @@
                     {
                         if (reader.HasRows)
                         {
-                            lblError.Text = "Eroare: Activitatea '" + numeNou + "' există deja în catalog!";
+                            lblError.Text = "Eroare: Activitatea '" + numeNou + "' exista deja in catalog!";
 
                             e.Cancel = true;
                         }
@@ -93,7 +93,6 @@
 
         protected void btnInapoiProgram_Click(object sender, EventArgs e)
         {
-            this.Title = "Butonul merge!";
 
             string tripId = Request.QueryString["TripID"];
             if (!string.IsNullOrEmpty(tripId))

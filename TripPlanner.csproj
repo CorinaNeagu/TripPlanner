@@ -106,6 +106,7 @@
       <DependentUpon>TripPlanner.mdf</DependentUpon>
     </Content>
     <Content Include="Calatorii.aspx" />
+    <Content Include="Cazare.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -213,6 +214,13 @@
     </Compile>
     <Compile Include="Calatorii.aspx.designer.cs">
       <DependentUpon>Calatorii.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Cazare.aspx.cs">
+      <DependentUpon>Cazare.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Cazare.aspx.designer.cs">
+      <DependentUpon>Cazare.aspx</DependentUpon>
     </Compile>
     <Compile Include="Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>

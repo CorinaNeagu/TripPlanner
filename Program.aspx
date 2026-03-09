@@ -3,34 +3,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
-<style>
-    body { font: 14px sans-serif; background: whitesmoke; color: darkslategray; padding: 20px; }
-    
-    .main-card { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px silver; }
-    
-    .section-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: black; }
-
-    .modern-grid { width: 100%; border-collapse: collapse; }
-    .modern-grid tr { display: flex; flex-direction: column; border: 1px solid lightgray; border-radius: 6px; margin-bottom: 10px; padding: 15px; }
-    .modern-grid tr:hover { border-color: indigo; background: ghostwhite; }
-    .modern-grid td { border: none; padding: 4px 0; }
-    .modern-grid th { display: none; }
-    
-    .input-field { width: 100%; padding: 10px; border: 1px solid silver; border-radius: 4px; outline: none; }
-    .input-field:focus { border-color: indigo; }
-    
-    .btn-primary { background: indigo; color: white; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
-    .btn-primary:hover { opacity: 0.8; }
-    
-    .total-display { font-size: 20px; font-weight: 800; color: indigo; text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid lightgray; }
-</style>
+    <title></title> 
 </head>
 
 <body>
     <form id="form1" runat="server">
         <div>
-            <h2 class="section-title">Informații Călătorie</h2>
+            <h2 class="section-title">Informatii Calatorie</h2>
+            <div class="budget-status-container" style="margin: 20px 0; padding: 10px; border-radius: 5px; background-color: #f8f9fa;">
+                <strong>Status Buget: </strong>
+                <asp:Label ID="lblStatusBuget" runat="server" Font-Bold="true" Text="Se încarcă..."></asp:Label>
+            </div>
             
             <asp:SqlDataSource ID="SqlDataSource2" runat="server" 
                 ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
@@ -70,32 +53,32 @@
             </asp:GridView>
             
             <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
-    ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
-    SelectCommand="GetItinerariuCuTotal" 
-    SelectCommandType="StoredProcedure"
-    OnSelected="SqlDataSource1_Selected"
-    OnInserted="SqlDataSource1_Inserted"
-    InsertCommand="INSERT INTO [Itinerariu] ([trip_id], [descriere], [data], [ora], [cost_total]) VALUES (@trip_id, @descriere, @data, @ora, @cost_total); SET @NewID = SCOPE_IDENTITY();" 
-    DeleteCommand="DELETE FROM [Itinerariu] WHERE [itinerariu_id] = @itinerariu_id">
-    
-    <SelectParameters>
-        <asp:QueryStringParameter Name="TripID" QueryStringField="TripID" Type="Int32" />
-        <asp:Parameter Name="TotalBuget" Type="Decimal" Direction="Output" />
-    </SelectParameters>
+                ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
+                SelectCommand="GetItinerariuCuTotal" 
+                SelectCommandType="StoredProcedure"
+                OnSelected="SqlDataSource1_Selected"
+                OnInserted="SqlDataSource1_Inserted"
+                InsertCommand="INSERT INTO [Itinerariu] ([trip_id], [descriere], [data], [ora], [cost_total]) VALUES (@trip_id, @descriere, @data, @ora, @cost_total); SET @NewID = SCOPE_IDENTITY();" 
+                DeleteCommand="DELETE FROM [Itinerariu] WHERE [itinerariu_id] = @itinerariu_id">
+                
+                <SelectParameters>
+                    <asp:QueryStringParameter Name="TripID" QueryStringField="TripID" Type="Int32" />
+                    <asp:Parameter Name="TotalBuget" Type="Decimal" Direction="Output" />
+                </SelectParameters>
 
-    <InsertParameters>
-        <asp:QueryStringParameter Name="trip_id" QueryStringField="TripID" Type="Int32" />
-        <asp:Parameter Name="descriere" Type="String" />
-        <asp:Parameter Name="data" DbType="Date" />
-        <asp:Parameter Name="ora" DbType="Time" /> 
-        <asp:Parameter Name="cost_total" Type="Decimal" />
-        <asp:Parameter Name="NewID" Type="Int32" Direction="Output" />
-    </InsertParameters>
+                <InsertParameters>
+                    <asp:QueryStringParameter Name="trip_id" QueryStringField="TripID" Type="Int32" />
+                    <asp:Parameter Name="descriere" Type="String" />
+                    <asp:Parameter Name="data" DbType="Date" />
+                    <asp:Parameter Name="ora" DbType="Time" /> 
+                    <asp:Parameter Name="cost_total" Type="Decimal" />
+                    <asp:Parameter Name="NewID" Type="Int32" Direction="Output" />
+                </InsertParameters>
 
-    <DeleteParameters>
-        <asp:Parameter Name="itinerariu_id" Type="Int32" />
-    </DeleteParameters>
-</asp:SqlDataSource>
+                <DeleteParameters>
+                    <asp:Parameter Name="itinerariu_id" Type="Int32" />
+                </DeleteParameters>
+            </asp:SqlDataSource>
 
             <h2 class="section-title">Adaugă Activitate Nouă</h2>
             <asp:DetailsView ID="DetailsView1" runat="server" 
@@ -152,50 +135,86 @@
                     </asp:TemplateField>
                     
                     <asp:CommandField ShowInsertButton="True" 
-                          InsertText="Salvează" 
-                          ShowCancelButton="True" 
-                          CancelText="Anulează" 
-                          CausesValidation="true" />
+                         InsertText="Salvează" 
+                         ShowCancelButton="True" 
+                         CancelText="Anulează" 
+                         CausesValidation="true" />
                 </Fields>
             </asp:DetailsView>
 
-            <div style="margin: 20px 0; font-size: 1.2em; font-weight: bold; color: #2c3e50;">
-                <asp:Label ID="lblCostTransport" runat="server" Text="Cost Transport:"></asp:Label>
-                <asp:Button ID="btnTransport" runat="server" 
-                    CausesValidation="False" 
-                    OnClick="btnTransport_Click" 
-                    Text="Optiuni Transport" />
-                <asp:DetailsView ID="DetailsView3" runat="server" 
-                    AutoGenerateRows="False" 
-                    GridLines="None" 
-                    CssClass="table-summary" 
-                    Width="300px" 
-                    BorderStyle="None" 
-                    AllowPaging="True"
-                    OnPageIndexChanging="DetailsView3_PageIndexChanging"
-                    >
-                    <PagerSettings Mode="NextPrevious" 
-                   NextPageText="Mergi la Întors" 
-                   PreviousPageText="Înapoi la Dus" />
-                    <Fields>
-                        <asp:BoundField DataField="directie" HeaderText="Direcție:" HeaderStyle-Font-Bold="true" />
-                        <asp:BoundField DataField="tip_transport" HeaderText="Tip:" HeaderStyle-Font-Bold="true" />
-                        <asp:BoundField DataField="cost" HeaderText="Preț (€):" DataFormatString="{0:N2}" HeaderStyle-Font-Bold="true" />
-                    </Fields>
-                </asp:DetailsView>
-                <asp:SqlDataSource ID="SqlDataSource3" runat="server"></asp:SqlDataSource>
-            </div>
+            <hr />
 
-            <asp:Button ID="btnVeziActivitati" 
-                    runat="server" 
-                    CausesValidation="False" 
-                    CssClass="btn-navigare" 
-                    OnClick="btnVeziActivitati_Click" 
-                    Text="Vezi Activitati" />
-            <br />
-                <asp:Label ID="lblTotalGeneral" runat="server" Text="Total Buget: 0.00 €"></asp:Label>
+            <div style="display: flex; justify-content: space-between; align-items: stretch; gap: 20px; margin-top: 30px;">
+    
+    <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #f9f9f9;">
+        <h3 style="margin-top:0; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Cazare</h3>
+        <asp:SqlDataSource ID="dsCazareAfisare" runat="server" 
+            ConnectionString="<%$ ConnectionStrings:ConnectionStringCalatorii %>" 
+            SelectCommand="SELECT [hotel_name], [price] FROM [Cazare] WHERE ([trip_id] = @trip_id AND [is_selected] = 1)">
+            <SelectParameters>
+                <asp:QueryStringParameter Name="trip_id" QueryStringField="TripID" Type="Int32" />
+            </SelectParameters>
+        </asp:SqlDataSource>
+        
+        <asp:DetailsView ID="dvCazare" runat="server" AutoGenerateRows="False" DataSourceID="dsCazareAfisare" Width="100%" GridLines="None" EmptyDataText="Fără cazare selectată.">
+            <Fields>
+                <asp:BoundField DataField="hotel_name" HeaderText="Hotel:" />
+                <asp:BoundField DataField="price" HeaderText="Preț (€):" DataFormatString="{0:F2}" />
+            </Fields>
+        </asp:DetailsView>
+        <div style="margin-top: 10px;">
+            <asp:Button ID="btnAlegeCazare" runat="server" CausesValidation="False" OnClick="btnAlegeCazare_Click" Text="Alege Cazare" Width="100%" />
         </div>
-        <p>
+    </div>
+
+    <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #f9f9f9;">
+        <h3 style="margin-top:0; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Transport</h3>
+        <asp:Label ID="lblCostTransport" runat="server" Text="Status zboruri:" Font-Size="Small" ForeColor="#666"></asp:Label>
+        <asp:DetailsView ID="DetailsView3" runat="server" AutoGenerateRows="False" GridLines="None" Width="100%" AllowPaging="True" OnPageIndexChanging="DetailsView3_PageIndexChanging">
+            <PagerSettings Mode="NextPrevious" NextPageText="Intors" PreviousPageText="Dus" />
+            <Fields>
+                <asp:BoundField DataField="directie" HeaderText="Dir:" />
+                <asp:BoundField DataField="cost" HeaderText="Pret (€):" DataFormatString="{0:N2}" />
+            </Fields>
+        </asp:DetailsView>
+        <div style="margin-top: 10px;">
+            <asp:Button ID="btnTransport" runat="server" CausesValidation="False" OnClick="btnTransport_Click" Text="Optiuni Transport" Width="100%" />
+        </div>
+    </div>
+
+    <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 8px; background-color: #f0f4f8;">
+        <h3 style="margin-top:0; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Actiuni</h3>
+        <asp:Button ID="btnVeziActivitati" runat="server" CausesValidation="False" OnClick="btnVeziActivitati_Click" Text="Vezi Catalog Activitati" Width="100%" />
+        
+        <div style="margin-top: 30px; padding: 10px; background: white; border-radius: 5px; text-align: center; border: 1px solid indigo;">
+            <span style="font-size: 0.9em; color: #666;">Total Estimata:</span><br />
+            <asp:Label ID="lblTotalGeneral" runat="server" Text="Total: 0.00 €" style="font-size: 1.4em; font-weight: bold; color: indigo;"></asp:Label>
+        </div>
+    </div>
+
+</div>
+            
+
+            <asp:Button ID="btnGenereazaRaport" runat="server" Text="Vezi Oferta" 
+                CssClass="btn-raport" 
+                OnClick="btnGenereazaRaport_Click" 
+                CausesValidation="False" />
+
+                <asp:Panel ID="pnlModalRaport" runat="server" Visible="false">
+                    <div class="modal-background">
+                        <div class="modal-content">
+                            <pre><asp:Literal ID="litRaportText" runat="server"></asp:Literal></pre>
+            
+                            <asp:Button ID="btnClose" runat="server" Text="Închide" 
+                                OnClick="btnClose_Click" CssClass="btn-close" />
+                        </div>
+                    </div>
+                </asp:Panel>
+
+            <asp:SqlDataSource ID="SqlDataSource3" runat="server"></asp:SqlDataSource>
+        </div>
+
+        <p style="margin-top:30px">
             <asp:HyperLink ID="lnkBack" runat="server" NavigateUrl="Calatorii.aspx">⬅ Înapoi la listă</asp:HyperLink>
         </p>
     </form>

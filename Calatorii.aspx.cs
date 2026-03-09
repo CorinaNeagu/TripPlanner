@@ -30,5 +30,10 @@ namespace TripPlanner
             SqlDataSourceCalatorii.SelectParameters["destination"].DefaultValue = "%";
             GridView1.DataBind();
         }
+
+        protected void btnBackHome_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("Default");
+        }
     }
 }

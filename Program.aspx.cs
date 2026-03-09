@@ -17,6 +17,9 @@ namespace TripPlanner
             if (!IsPostBack)
             {
                 IncarcaDateTransport();
+                IncarcaDateCazare();
+                IncarcaStatusBuget();
+                dvCazare.DataBind();
 
                 string activitateDinCatalog = Request.QueryString["SelectedAct"];
                 if (!string.IsNullOrEmpty(activitateDinCatalog))
@@ -165,30 +168,42 @@ namespace TripPlanner
         {
             string connString = ConfigurationManager.ConnectionStrings["ConnectionStringCalatorii"].ConnectionString;
             string tripIdStr = Request.QueryString["TripID"];
-
             if (string.IsNullOrEmpty(tripIdStr)) return;
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                SqlCommand cmd = new SqlCommand("GetItinerariuCuTotal", conn);
+                SqlCommand cmd = new SqlCommand("GetTotalBugetTrip", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@TripID", int.Parse(tripIdStr));
+                // Parametrul InputOutput conform exemplului de curs
+                SqlParameter pTrip = new SqlParameter("@TripID", SqlDbType.Int)
+                {
+                    Value = int.Parse(tripIdStr),
+                    Direction = ParameterDirection.InputOutput
+                };
+                cmd.Parameters.Add(pTrip);
 
-                SqlParameter totalParam = new SqlParameter("@TotalBuget", SqlDbType.Decimal);
-                totalParam.Precision = 10;
-                totalParam.Scale = 2;
-                totalParam.Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(totalParam);
+                // Parametrii de ieșire
+                cmd.Parameters.Add(new SqlParameter("@TotalActivitati", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output });
+                cmd.Parameters.Add(new SqlParameter("@TotalTransport", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output });
+                cmd.Parameters.Add(new SqlParameter("@TotalCazare", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output });
+                cmd.Parameters.Add(new SqlParameter("@TotalGeneral", SqlDbType.Decimal) { Precision = 10, Scale = 2, Direction = ParameterDirection.Output });
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
 
-                decimal total = (cmd.Parameters["@TotalBuget"].Value != DBNull.Value)
-                                ? (decimal)cmd.Parameters["@TotalBuget"].Value
-                                : 0;
+                    decimal tra = (cmd.Parameters["@TotalTransport"].Value != DBNull.Value) ? Convert.ToDecimal(cmd.Parameters["@TotalTransport"].Value) : 0;
+                    decimal tot = (cmd.Parameters["@TotalGeneral"].Value != DBNull.Value) ? Convert.ToDecimal(cmd.Parameters["@TotalGeneral"].Value) : 0;
 
-                lblTotalGeneral.Text = $"Buget Total: {total:F2} €";
+                    lblCostTransport.Text = tra.ToString("N2") + " €";
+                    lblTotalGeneral.Text = string.Format("💰 Buget Total: {0:N2} €", tot);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Eroare SQL: " + ex.Message);
+                }
             }
         }
 
@@ -350,5 +365,106 @@ namespace TripPlanner
             DetailsView3.PageIndex = e.NewPageIndex;
             IncarcaDateTransport();
         }
+
+        protected void btnAlegeCazare_Click(object sender, EventArgs e)
+        {
+            string tripId = Request.QueryString["TripID"];
+
+            if (!string.IsNullOrEmpty(tripId))
+            {
+                Response.Redirect("Cazare.aspx?TripID=" + tripId);
+            }
+        }
+
+        private decimal IncarcaDateCazare()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ConnectionStringCalatorii"].ConnectionString;
+            string tripId = Request.QueryString["TripID"];
+            decimal pretCazare = 0;
+
+            if (string.IsNullOrEmpty(tripId)) return 0;
+
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                string sql = "SELECT hotel_name, price FROM Cazare WHERE trip_id = @tid";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@tid", tripId);
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                if (rdr.Read())
+                {
+                    if (rdr["price"] != DBNull.Value)
+                    {
+                        pretCazare = Convert.ToDecimal(rdr["price"]);
+                    }
+                }
+                con.Close();
+            }
+
+            dvCazare.DataBind();
+            return pretCazare;
+        }
+
+        protected void btnGenereazaRaport_Click(object sender, EventArgs e)
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ConnectionStringCalatorii"].ConnectionString;
+            string tripId = Request.QueryString["TripID"];
+            if (string.IsNullOrEmpty(tripId)) return;
+
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                SqlCommand cmd = new SqlCommand("GenerareItinerariuComplet", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TripID", tripId);
+
+                SqlParameter outParam = new SqlParameter("@RezultatFinal", SqlDbType.NVarChar, -1);
+                outParam.Direction = ParameterDirection.Output;
+                cmd.Parameters.Add(outParam);
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+
+                litRaportText.Text = outParam.Value.ToString();
+                pnlModalRaport.Visible = true;
+            }
+        }
+        protected void btnClose_Click(object sender, EventArgs e)
+        {
+            pnlModalRaport.Visible = false;
+        }
+
+        private void IncarcaStatusBuget()
+        {
+            string cs = ConfigurationManager.ConnectionStrings["ConnectionStringCalatorii"].ConnectionString;
+            string tripId = Request.QueryString["TripID"];
+            if (string.IsNullOrEmpty(tripId)) return;
+
+            using (SqlConnection con = new SqlConnection(cs))
+            {
+                // Apelăm funcția direct
+                string sql = "SELECT dbo.GetBudgetStatus(@tid)";
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.Parameters.AddWithValue("@tid", tripId);
+
+                con.Open();
+
+                // Preluăm mesajul generat de SQL
+                string statusMesaj = cmd.ExecuteScalar().ToString();
+
+                lblStatusBuget.Text = statusMesaj;
+
+                // Opțional: Schimbăm culoarea textului dacă există o depășire
+                if (statusMesaj.Contains("Depasire"))
+                {
+                    lblStatusBuget.ForeColor = System.Drawing.Color.Red;
+                }
+                else
+                {
+                    lblStatusBuget.ForeColor = System.Drawing.Color.Green;
+                }
+            }
+        }
+
     }
 }
